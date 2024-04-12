@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:myapp1/firebase_options.dart';
 import 'package:myapp1/services/auth/auth_user.dart';
 import 'package:myapp1/services/auth/auth_provider.dart';
 import 'package:myapp1/services/auth/auth_exceptions.dart';
@@ -61,7 +63,7 @@ class FirebaseAuthProvider implements AuthProvider {
       if (user != null) {
         return user;
       } else {
-        throw UseNotLoggedInAuthException();
+        throw UserNotLoggedInAuthException();
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'invalid-credential') {
@@ -92,7 +94,14 @@ class FirebaseAuthProvider implements AuthProvider {
     if (user != null) {
       await user.sendEmailVerification();
     } else {
-      throw UseNotLoggedInAuthException();
+      throw UserNotLoggedInAuthException();
     }
+  }
+
+  @override
+  Future<void> initialize() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   }
 }
